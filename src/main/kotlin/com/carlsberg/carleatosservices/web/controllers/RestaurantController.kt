@@ -1,9 +1,8 @@
 package com.carlsberg.carleatosservices.web.controllers
 
 import com.carlsberg.carleatosservices.persistence.entities.Restaurant
-import com.carlsberg.carleatosservices.services.RestaurantServiceImpl
+import com.carlsberg.carleatosservices.services.RestaurantService
 import com.carlsberg.carleatosservices.web.dto.RestaurantDto
-import org.slf4j.LoggerFactory
 import org.springframework.hateoas.CollectionModel
 import org.springframework.hateoas.EntityModel
 import org.springframework.hateoas.server.ExposesResourceFor
@@ -18,17 +17,17 @@ import java.util.stream.Collectors.toList
 
 @RestController
 @ExposesResourceFor(value = RestaurantDto::class)
-@RequestMapping("/restaurants")
-class RestaurantController(val restaurantService: RestaurantServiceImpl) {
+@RequestMapping("/api")
+class RestaurantController(val restaurantService: RestaurantService) {
 
-    @GetMapping(path = ["/{id}"])
+    @GetMapping("/restaurants/{id}")
     fun findById(@PathVariable id: String): EntityModel<RestaurantDto> {
         val linkToSelf = linkTo(methodOn(this::class.java).findById(id)).withSelfRel()
         return EntityModel.of(restaurantService.findByEid(UUID.fromString(id)).toRestaurantDto(),
                 linkToSelf)
     }
 
-    @GetMapping
+    @GetMapping("/restaurants")
     fun findAll(): CollectionModel<EntityModel<RestaurantDto>> {
         val linkToSelf = linkTo(methodOn(this::class.java).findAll()).withSelfRel()
         return CollectionModel.of(
