@@ -12,7 +12,7 @@ data class Restaurant(
         val id: Int,
 
         @Column(nullable = false)
-        val eid: UUID?,
+        val eid: UUID,
 
         @Column(nullable = false)
         val name: String,
@@ -29,14 +29,14 @@ data class Restaurant(
 
 
 ) {
-    override fun toString(): String {
-        return "Restaurant(id=$id, name='$name')"
-    }
-
     companion object {
         fun from(id: Int, name: String, type: RestaurantType) {
             Restaurant(id, randomUUID(), name, null, null, type)
         }
+    }
+
+    override fun toString(): String {
+        return "Restaurant(id=$id, name='$name')"
     }
 }
 

@@ -1,6 +1,5 @@
 package com.carlsberg.carleatosservices.web.controllers
 
-import com.carlsberg.carleatosservices.persistence.entities.Restaurant
 import com.carlsberg.carleatosservices.services.RestaurantService
 import com.carlsberg.carleatosservices.web.dto.RestaurantDto
 import org.springframework.hateoas.CollectionModel
@@ -17,34 +16,26 @@ import java.util.stream.Collectors.toList
 
 @RestController
 @ExposesResourceFor(value = RestaurantDto::class)
-@RequestMapping("/api")
+@RequestMapping("/api/restaurants")
 class RestaurantController(val restaurantService: RestaurantService) {
 
-    @GetMapping("/restaurants/{id}")
-    fun findById(@PathVariable id: String): EntityModel<RestaurantDto> {
-        val linkToSelf = linkTo(methodOn(this::class.java).findById(id)).withSelfRel()
-        return EntityModel.of(restaurantService.findByEid(UUID.fromString(id)).toRestaurantDto(),
-                linkToSelf)
+    @GetMapping("/{eid}")
+    fun findById(@PathVariable eid: UUID): EntityModel<RestaurantDto> {
+        val restaurant = restaurantService.findByEid(eid)
+        val linkToSelf = linkTo(methodOn(RestaurantController::class.java).findById(eid)).withSelfRel()
+        return EntityModel.of(RestaurantDto.from(restaurant), linkToSelf)
     }
 
-    @GetMapping("/restaurants")
+    @GetMapping
     fun findAll(): CollectionModel<EntityModel<RestaurantDto>> {
         val linkToSelf = linkTo(methodOn(this::class.java).findAll()).withSelfRel()
-        return CollectionModel.of(
-                restaurantService.findAll().stream()
-                        .map { it.toRestaurantDto() }
-                        .map { it.toEntityModel() }
-                        .collect(toList())
-                , linkToSelf)
-    }
+        val restaurantList = restaurantService.findAll().stream()
+                .map { RestaurantDto.from(it) }
+                .map { it.toEntityModel() }
+                .collect(toList())
 
-    fun Restaurant.toRestaurantDto() = RestaurantDto(
-            eid = eid.toString(),
-            name = name,
-            nickname = nickname,
-            description = description,
-            type = type.name
-    )
+        return CollectionModel.of(restaurantList, linkToSelf)
+    }
 
     fun RestaurantDto.toEntityModel(): EntityModel<RestaurantDto> {
         return EntityModel.of(this, linkTo(methodOn(RestaurantController::class.java).findById(this.eid)).withSelfRel())

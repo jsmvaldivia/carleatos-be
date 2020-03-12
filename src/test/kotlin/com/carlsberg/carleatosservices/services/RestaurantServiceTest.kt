@@ -14,7 +14,7 @@ import org.mockito.Mockito.mock
 import java.util.UUID.randomUUID
 
 
-internal class RestaurantServiceImplTest {
+internal class RestaurantServiceTest {
 
     private lateinit var restaurantService: RestaurantService
 
@@ -23,7 +23,7 @@ internal class RestaurantServiceImplTest {
 
     @BeforeEach
     internal fun setUp() {
-        restaurantService = RestaurantServiceImpl(restaurantRepository)
+        restaurantService = RestaurantService(restaurantRepository)
     }
 
     @Test
