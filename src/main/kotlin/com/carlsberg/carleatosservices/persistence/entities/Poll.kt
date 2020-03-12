@@ -14,7 +14,7 @@ data class Poll(
         @Column
         val eid: UUID,
 
-        @OneToMany
+        @ManyToMany
         val restaurants: Collection<Restaurant>
 
 
