@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import java.time.LocalDateTime.now
 import java.util.Collections.singletonList
 import java.util.UUID.randomUUID
 
@@ -31,7 +32,8 @@ internal class PollServiceTest {
 
         `when`(pollRepository.findByEid(pollEid))
                 .thenReturn(Poll(id = 1, eid = pollEid,
-                        restaurants = singletonList(Restaurant(id = 1, eid = pollEid, name = "Ramiro", nickname = "Zé e Maria", description = "", type = TASCA))))
+                        restaurants = singletonList(Restaurant(id = 1, eid = pollEid, name = "Ramiro", nickname = "Zé e Maria", description = "", type = TASCA)),
+                        blocked = false, startDate = now(), endDate = now().plusDays(1)))
 
         val foundPoll = pollService.findPollByEid(pollEid)
 
@@ -41,6 +43,7 @@ internal class PollServiceTest {
 
     @Test
     fun findActivePolls() {
+
     }
 
     @Test
